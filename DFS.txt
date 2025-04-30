@@ -1,0 +1,90 @@
+package LP2;
+
+import java.util.*;
+
+public class DFSSearch {
+    private static Map<String, List<String>> succList = new HashMap<>();
+    private static String start = "A";
+    private static String goal = "C";
+    private static List<String> closed = new ArrayList<>();
+    private static final boolean SUCCESS = true;
+    private static final boolean FAILURE = false;
+    private static boolean state = FAILURE;
+    
+    public static void main(String[] args) {
+        // Initialize the successor list
+        succList.put("A", Arrays.asList("B", "C"));
+        succList.put("B", Arrays.asList("D", "E", "F"));
+        succList.put("C", Arrays.asList("G", "H", "I"));
+        succList.put("D", new ArrayList<>());
+        succList.put("E", new ArrayList<>());
+        succList.put("F", Arrays.asList("J", "K"));
+        succList.put("G", new ArrayList<>());
+        succList.put("H", new ArrayList<>());
+        succList.put("I", Arrays.asList("L", "M"));
+        succList.put("J", new ArrayList<>());
+        succList.put("K", new ArrayList<>());
+        succList.put("L", new ArrayList<>());
+        succList.put("M", new ArrayList<>());
+        
+        boolean result = DFS();
+        System.out.println(closed + ", " + result);
+    }
+    
+    private static boolean goalTest(String n) {
+        return n.equals(goal);
+    }
+    
+    private static List<String> moveGen(String n) {
+        List<String> newList = new ArrayList<>();
+        if (succList.containsKey(n)) {
+            newList = succList.get(n);
+        }
+        System.out.println("New_list= " + newList);
+        return newList;
+    }
+    
+    private static List<String> append(List<String> l1, List<String> l2) {
+        List<String> newList = new ArrayList<>(l1);
+        newList.addAll(l2);
+        return newList;
+    }
+    
+    private static boolean DFS() {
+        List<String> open = new ArrayList<>();
+        open.add(start);
+        List<String> closedList = new ArrayList<>();
+        
+        while (!open.isEmpty() && state != SUCCESS) {
+            System.out.println("------------");
+            String n = open.get(0);
+            System.out.println("N=> " + n);
+            open.remove(0); // delete the node we picked
+            
+            if (goalTest(n)) {
+                state = SUCCESS;
+                closedList.add(n);
+                System.out.println("CLOSED= " + closedList);
+            } else {
+                closedList.add(n);
+                System.out.println("CLOSED== " + closedList);
+                List<String> child = moveGen(n);
+                System.out.println("CHILD= " + child);
+                
+                // Create a new list to avoid concurrent modification
+                List<String> filteredChild = new ArrayList<>(child);
+                
+                // Remove nodes that are in CLOSED
+                filteredChild.removeAll(closedList);
+                
+                // Remove nodes that are in OPEN
+                filteredChild.removeAll(open);
+                
+                // Append movegen elements to OPEN
+                open = append(filteredChild, open);
+                closed = closedList;
+            }
+        }
+        return state;
+    }
+}

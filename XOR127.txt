@@ -1,0 +1,72 @@
+package LP2;
+
+public class XOR6 {
+    public static void main(String[] args) {
+        // Define the string
+        String str = "Hello World";
+        int len = str.length();
+        
+        // AND operation with 127
+        System.out.print("\n AND ing Operation with 127\t==>  ");
+        for(int i = 0; i < len; i++) {
+            System.out.print((int)str.charAt(i) & 127);
+            System.out.print(" ");
+        }
+        
+        // XOR operation with 127
+        System.out.print("\n XOR ing Operation with 127\t==>  ");
+        for(int i = 0; i < len; i++) {
+            System.out.print((int)str.charAt(i) ^ 127);
+            System.out.print(" ");
+        }
+        
+        // OR operation with 127
+        System.out.print("\n OR ing Operation with 127\t==>  ");
+        for(int i = 0; i < len; i++) {
+            System.out.print((int)str.charAt(i) | 127);
+            System.out.print(" ");
+        }
+        
+        System.out.println("\n");
+    }
+}
+
+//
+//our output looks correct! Let me explain why you're seeing these specific results:
+//For the string "Hello World", each character has an ASCII value:
+//
+//'H' = 72
+//'e' = 101
+//'l' = 108
+//'l' = 108
+//'o' = 111
+//' ' (space) = 32
+//'W' = 87
+//'o' = 111
+//'r' = 114
+//'l' = 108
+//'d' = 100
+//
+//When you perform bitwise operations with 127 (which in binary is 01111111):
+//
+//AND operation (& 127):
+//
+//This preserves only the bits that are 1 in both the character and 127
+//Since 127 has all bits set except the highest bit, this effectively clears the highest bit and keeps all other bits the same
+//For ASCII characters (which are all < 128), this returns the original value
+//So you get: 72 101 108 108 111 32 87 111 114 108 100
+//
+//
+//XOR operation (^ 127):
+//
+//This flips bits where 127 has 1's
+//Since 127 has its lowest 7 bits set to 1, this inverts all those bits
+//That's why you get: 55 26 19 19 16 95 40 16 13 19 27
+//
+//
+//OR operation (| 127):
+//
+//This sets bits that are 1 in either the character or 127
+//Since 127 has all its lowest 7 bits set to 1, the result always has those bits set to 1
+//So all results become exactly 127
+//That's why you see: 127 127 127 127 127 127 127 127 127 127 127

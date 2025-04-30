@@ -1,0 +1,75 @@
+package LP2;
+
+import java.lang.Math;
+
+public class Transposition {
+    public static String encryptMessage(int key, String message) {
+        StringBuilder[] ciphertext = new StringBuilder[key];
+        for (int i = 0; i < key; i++) {
+            ciphertext[i] = new StringBuilder();
+        }
+        
+        for (int col = 0; col < key; col++) {
+            int position = col;
+            while (position < message.length()) {
+                ciphertext[col].append(message.charAt(position));
+                position += key;
+            }
+        }
+        
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < key; i++) {
+            result.append(ciphertext[i].toString());
+        }
+        return result.toString();
+    }
+    
+    public static String decryptMessage(int key, String message) {
+        int numOfRows = key;
+        int numOfColumns = (int) Math.ceil((double) message.length() / key);
+        int numOfShadedBoxes = (numOfColumns * numOfRows) - message.length();
+        
+        StringBuilder[] plaintext = new StringBuilder[numOfColumns];
+        for (int i = 0; i < numOfColumns; i++) {
+            plaintext[i] = new StringBuilder();
+        }
+        
+        int col = 0;
+        int row = 0;
+        
+        for (int i = 0; i < message.length(); i++) {
+            char symbol = message.charAt(i);
+            plaintext[col].append(symbol);
+            System.out.println("Adding '" + symbol + "' to column " + col + ", row " + row + ".");
+            
+            col++;
+            if ((col == numOfColumns) || (col == numOfColumns - 1 && row >= numOfRows - numOfShadedBoxes)) {
+                col = 0;
+                row++;
+                System.out.println("Moving to the next row.");
+            }
+        }
+        
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < numOfColumns; i++) {
+            result.append(plaintext[i].toString());
+        }
+        return result.toString();
+    }
+    
+    public static void main(String[] args) {
+        String myMessage = "Transposition Cipher";
+        int myKey = 3;
+        
+        System.out.println("Encryption Process starts");
+        System.out.println("Plain Text is: Transposition Cipher ");
+        
+        String ciphertext = encryptMessage(myKey, myMessage);
+        System.out.println("Length of message " + myMessage.length());
+        System.out.println("Cipher Text is==> " + ciphertext);
+        
+        System.out.println("Decryption Process Starts:");
+        String pt = decryptMessage(myKey, ciphertext);
+        System.out.println("Plain Text is==> " + pt);
+    }
+}

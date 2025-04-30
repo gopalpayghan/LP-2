@@ -1,0 +1,93 @@
+package LP2;
+
+import java.util.*;
+
+public class DJkstra3 {
+    
+    // Main method to run the algorithm
+    public static void main(String[] args) {
+        // Define the graph using a nested HashMap
+        Map<String, Map<String, Integer>> graph = new HashMap<>();
+        
+        // Initialize the graph structure
+        graph.put("A", new HashMap<>());
+        graph.put("B", new HashMap<>());
+        graph.put("C", new HashMap<>());
+        graph.put("D", new HashMap<>());
+        graph.put("E", new HashMap<>());
+        graph.put("F", new HashMap<>());
+        
+        // Add edges and weights
+        graph.get("A").put("B", 2);
+        graph.get("A").put("C", 3);
+        graph.get("B").put("D", 3);
+        graph.get("B").put("E", 1);
+        graph.get("C").put("F", 2);
+        graph.get("E").put("F", 1);
+        
+        // Run Dijkstra's algorithm
+        Map.Entry<Map<String, Integer>, Map<String, String>> result = dijkstra(graph, "A");
+        Map<String, Integer> nodeDistance = result.getKey();
+        Map<String, String> path = result.getValue();
+        
+        // Print results
+        System.out.println(nodeDistance);
+        System.out.println(path);
+    }
+    
+    public static Map.Entry<Map<String, Integer>, Map<String, String>> dijkstra(Map<String, Map<String, Integer>> graph, String startNode) {
+        // Initialize distances to infinity for all nodes
+        Map<String, Integer> distances = new HashMap<>();
+        for (String node : graph.keySet()) {
+            distances.put(node, Integer.MAX_VALUE);
+        }
+        System.out.println("distances:: " + distances);
+        
+        // Distance to starting node is 0
+        distances.put(startNode, 0);
+        
+        // Track the previous node for each node
+        Map<String, String> previous = new HashMap<>();
+        for (String node : graph.keySet()) {
+            previous.put(node, null);
+        }
+        
+        // Priority queue to hold nodes to visit (distance, node)
+        PriorityQueue<Map.Entry<Integer, String>> queue = new PriorityQueue<>(
+            Comparator.comparing(Map.Entry::getKey)
+        );
+        
+        // Add start node to queue
+        queue.add(new AbstractMap.SimpleEntry<>(0, startNode));
+        System.out.println("Value of QUEUE ==> " + queue);
+        
+        while (!queue.isEmpty()) {
+            // Get node with smallest distance
+            Map.Entry<Integer, String> current = queue.poll();
+            int currentDistance = current.getKey();
+            String currentNode = current.getValue();
+            
+            System.out.println("Current Distance ==> " + currentDistance);
+            System.out.println("Current Node ==> " + currentNode);
+            
+            // Process all neighbors
+            for (Map.Entry<String, Integer> neighbor : graph.get(currentNode).entrySet()) {
+                String nextNode = neighbor.getKey();
+                int weight = neighbor.getValue();
+                
+                // Calculate potential new distance
+                int distanceTemp = currentDistance + weight;
+                
+                // If we found a better path
+                if (distanceTemp < distances.get(nextNode)) {
+                    distances.put(nextNode, distanceTemp);
+                    previous.put(nextNode, currentNode);
+                    queue.add(new AbstractMap.SimpleEntry<>(distanceTemp, nextNode));
+                }
+                System.out.println("Distances:: " + distances);
+            }
+        }
+        
+        return new AbstractMap.SimpleEntry<>(distances, previous);
+    }
+}

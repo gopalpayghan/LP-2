@@ -1,0 +1,154 @@
+package LP2;
+
+import java.util.*;
+
+public class AStar {
+    
+    public static List<int[]> astar(int[][] grid, int[] start, int[] goal) {
+        // Directions: up, right, down, left
+        int[][] dirs = {{0, -1}, {1, 0}, {0, 1}, {-1, 0}};
+        
+        // Priority queue for open nodes
+        PriorityQueue<Node> openSet = new PriorityQueue<>();
+        openSet.add(new Node(start[0], start[1], 0, 
+                        Math.abs(start[0] - goal[0]) + Math.abs(start[1] - goal[1])));
+        
+        // Track visited nodes and parents
+        Set<String> visited = new HashSet<>();
+        Map<String, int[]> parents = new HashMap<>();
+        
+        // Cost from start to node
+        Map<String, Integer> gScore = new HashMap<>();
+        gScore.put(start[0] + "," + start[1], 0);
+        
+        while (!openSet.isEmpty()) {
+            Node current = openSet.poll();
+            String currentKey = current.x + "," + current.y;
+            
+            // Goal check
+            if (current.x == goal[0] && current.y == goal[1]) {
+                // Reconstruct path
+                List<int[]> path = new ArrayList<>();
+                int[] currentPos = new int[]{current.x, current.y};
+                
+                while (parents.containsKey(currentPos[0] + "," + currentPos[1])) {
+                    path.add(currentPos);
+                    currentPos = parents.get(currentPos[0] + "," + currentPos[1]);
+                }
+                path.add(start);
+                Collections.reverse(path);
+                return path;
+            }
+            
+            // Mark as visited
+            if (visited.contains(currentKey)) continue;
+            visited.add(currentKey);
+            
+            // Check neighbors
+            for (int[] dir : dirs) {
+                int nx = current.x + dir[0];
+                int ny = current.y + dir[1];
+                String neighborKey = nx + "," + ny;
+                
+                // Skip invalid positions or obstacles
+                if (nx < 0 || ny < 0 || nx >= grid[0].length || ny >= grid.length || 
+                    grid[ny][nx] == 1 || visited.contains(neighborKey)) {
+                    continue;
+                }
+                
+                // Calculate new cost
+                int newG = gScore.get(currentKey) + 1;
+                
+                if (!gScore.containsKey(neighborKey) || newG < gScore.get(neighborKey)) {
+                    // Update scores
+                    gScore.put(neighborKey, newG);
+                    
+                    // Add to open set
+                    int h = Math.abs(nx - goal[0]) + Math.abs(ny - goal[1]);
+                    openSet.add(new Node(nx, ny, newG, h));
+                    parents.put(neighborKey, new int[]{current.x, current.y});
+                }
+            }
+        }
+        
+        return null;  // No path found
+    }
+    
+    static class Node implements Comparable<Node> {
+        int x, y, g, h, f;
+        
+        Node(int x, int y, int g, int h) {
+            this.x = x;
+            this.y = y;
+            this.g = g;
+            this.h = h;
+            this.f = g + h;
+        }
+        
+        @Override
+        public int compareTo(Node other) {
+            return Integer.compare(this.f, other.f);
+        }
+    }
+    
+    public static void main(String[] args) {
+        // Simple grid (0=empty, 1=obstacle)
+        int[][] grid = {
+            {0, 0, 0, 0, 0},
+            {0, 1, 1, 0, 0},
+            {0, 0, 0, 0, 0},
+            {0, 1, 0, 1, 0},
+            {0, 0, 0, 0, 0}
+        };
+        
+        int[] start = {0, 0};
+        int[] goal = {4, 4};
+        
+        List<int[]> path = astar(grid, start, goal);
+        
+        if (path != null) {
+            System.out.println("Path found!");
+            
+            // Print grid with path
+            for (int y = 0; y < grid.length; y++) {
+                for (int x = 0; x < grid[0].length; x++) {
+                    boolean inPath = false;
+                    for (int[] point : path) {
+                        if (point[0] == x && point[1] == y) {
+                            inPath = true;
+                            break;
+                        }
+                    }
+                    
+                    if (x == start[0] && y == start[1]) {
+                        System.out.print("S ");
+                    } else if (x == goal[0] && y == goal[1]) {
+                        System.out.print("G ");
+                    } else if (inPath) {
+                        System.out.print("* ");
+                    } else if (grid[y][x] == 1) {
+                        System.out.print("# ");
+                    } else {
+                        System.out.print(". ");
+                    }
+                }
+                System.out.println();
+            }
+        } else {
+            System.out.println("No path found");
+        }
+    }
+}
+//
+//
+//S: The starting point (0,0)
+//G: The goal/destination point (4,4)
+//*: The path that the A* algorithm calculated as optimal
+//#: Obstacles in the grid that the path must avoid
+//.: Empty spaces (traversable but not part of the optimal path)
+//
+//The A* algorithm successfully found the shortest path from the top-left corner (0,0) to the bottom-right corner (4,4) while avoiding all obstacles. The path moves down the left side to avoid the walls in the second row, then moves right along the bottom of the grid to reach the goal.
+//
+//This is exactly what we'd expect from the A* algorithm - it efficiently finds the shortest path while accounting for obstacles, using the Manhattan distance heuristic to guide its search toward the goal.
+
+

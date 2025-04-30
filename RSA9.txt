@@ -1,0 +1,36 @@
+package LP2;
+
+import java.util.Scanner;
+import java.math.BigInteger;
+
+public class RSA {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("Enter the message to encrypt (as number):");
+        BigInteger msg = sc.nextBigInteger();
+
+        System.out.println("Enter 1st prime number p:");
+        BigInteger p = sc.nextBigInteger();
+
+        System.out.println("Enter 2nd prime number q:");
+        BigInteger q = sc.nextBigInteger();
+
+        BigInteger n = p.multiply(q);
+        BigInteger phi = p.subtract(BigInteger.ONE).multiply(q.subtract(BigInteger.ONE));
+
+        BigInteger e = BigInteger.valueOf(2);
+        while (e.compareTo(phi) < 0 && !e.gcd(phi).equals(BigInteger.ONE)) {
+            e = e.add(BigInteger.ONE);
+        }
+
+        BigInteger d = e.modInverse(phi);
+
+        BigInteger encrypted = msg.modPow(e, n);
+        BigInteger decrypted = encrypted.modPow(d, n);
+
+        System.out.println("Encrypted message: " + encrypted);
+        System.out.println("Decrypted message: " + decrypted);
+    }
+}
+

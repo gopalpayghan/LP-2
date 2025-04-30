@@ -1,0 +1,25 @@
+
+def main():
+    # Define the string
+    string = "Hello World"
+    length = len(string)
+    
+    # AND operation with 127
+    print("\n AND ing Operation with 127\t==>  ", end="")
+    for i in range(length):
+        print(f"{ord(string[i]) & 127} ", end="")
+    
+    # XOR operation with 127
+    print("\n XOR ing Operation with 127\t==>  ", end="")
+    for i in range(length):
+        print(f"{ord(string[i]) ^ 127} ", end="")
+    
+    # OR operation with 127
+    print("\n OR ing Operation with 127\t==>  ", end="")
+    for i in range(length):
+        print(f"{ord(string[i]) | 127} ", end="")
+    
+    print("\n")
+
+if __name__ == "__main__":
+    main()

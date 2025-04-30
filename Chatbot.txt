@@ -1,0 +1,70 @@
+package LP2;
+
+import java.util.Scanner;
+
+public class Chatbot {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        
+        System.out.println("Welcome to Stationery Shop Customer Service");
+        System.out.println("==========================================");
+        System.out.println("You may ask any of these questions:");
+        System.out.println("1. Do you have notebooks in stock?");
+        System.out.println("2. What pens do you recommend?");
+        System.out.println("3. What are your business hours?");
+        System.out.println("4. Do you offer student discounts?");
+        System.out.println("5. How can I place a bulk order?");
+        System.out.println("6. Do you deliver?");
+        System.out.println("7. Exit");
+        
+        while (true) {
+            System.out.print("\nHow can I help you today? ");
+            String question = scanner.nextLine().toLowerCase();
+            
+            if (question.contains("notebook") || question.equals("1")) {
+                System.out.println("Yes, we have several types of notebooks in stock:");
+                System.out.println("- Spiral notebooks ($3.99)");
+                System.out.println("- Hardcover journals ($8.99)");
+                System.out.println("- Composition books ($2.50)");
+                System.out.println("- Graph paper notebooks ($4.50)");
+            } else if (question.contains("pen") || question.equals("2")) {
+                System.out.println("We recommend these popular pen options:");
+                System.out.println("- Pilot G2 gel pens for smooth writing");
+                System.out.println("- Papermate InkJoy for quick-drying ink");
+                System.out.println("- Uni-ball Jetstream for left-handed writers");
+                System.out.println("- Sharpie S-Gel for vibrant colors");
+            } else if (question.contains("hour") || question.equals("3")) {
+                System.out.println("Our business hours are:");
+                System.out.println("Monday-Friday: 9:00 AM - 7:00 PM");
+                System.out.println("Saturday: 10:00 AM - 5:00 PM");
+                System.out.println("Sunday: Closed");
+            } else if (question.contains("discount") || question.contains("student") || question.equals("4")) {
+                System.out.println("Yes! We offer a 10% discount for students with valid ID.");
+                System.out.println("We also have a loyalty program where you earn points on every purchase.");
+            } else if (question.contains("bulk") || question.contains("order") || question.equals("5")) {
+                System.out.println("For bulk orders, please email your requirements to orders@stationeryshop.com");
+                System.out.println("Orders over $200 qualify for a 15% discount and free delivery.");
+                System.out.print("Would you like our bulk order form? (yes/no): ");
+                String response = scanner.nextLine().toLowerCase();
+                if (response.equals("yes")) {
+                    System.out.println("I'll email you our bulk order form right away. Please provide your email address:");
+                    String email = scanner.nextLine();
+                    System.out.println("Thank you! The form will be sent to " + email + " shortly.");
+                }
+            } else if (question.contains("deliver") || question.equals("6")) {
+                System.out.println("Yes, we offer delivery services:");
+                System.out.println("- Free delivery for orders over $50");
+                System.out.println("- $5 delivery fee for orders under $50");
+                System.out.println("- Same-day delivery available for orders placed before 11 AM");
+            } else if (question.equals("exit") || question.equals("7")) {
+                break;
+            } else {
+                System.out.println("I'm sorry, I don't have information about that question.");
+                System.out.println("Please choose from the questions listed above or contact us at help@stationeryshop.com");
+            }
+        }
+        
+        scanner.close();
+        System.out.println("\nThank you for contacting Stationery Shop Customer Service. Have a great day!");
+    }
+}

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Diffie-Hellman Key Exchange</title>
+    <script>
+        function modPow(base, exp, mod) {
+            let result = 1n;
+            base = BigInt(base);
+            exp = BigInt(exp);
+            mod = BigInt(mod);
+
+            while (exp > 0n) {
+                if (exp % 2n === 1n) {
+                    result = (result * base) % mod;
+                }
+                exp = exp / 2n;
+                base = (base * base) % mod;
+            }
+            return result;
+        }
+
+        function computeKeys() {
+            // Publicly shared values (can be made user-editable)
+            const g = BigInt(document.getElementById("g").value); // base
+            const p = BigInt(document.getElementById("p").value); // prime
+
+            // Alice's secret (from user)
+            const aliceSecret = BigInt(document.getElementById("aliceSecret").value);
+
+            // Bob's secret (hidden in JavaScript)
+            const bobSecret = 15n;
+
+            // Alice's public key
+            const alicePublic = modPow(g, aliceSecret, p);
+            document.getElementById("alicePublic").textContent = alicePublic;
+
+            // Bob's public key
+            const bobPublic = modPow(g, bobSecret, p);
+            document.getElementById("bobPublic").textContent = bobPublic;
+
+            // Shared secret
+            const aliceSharedSecret = modPow(bobPublic, aliceSecret, p);
+            const bobSharedSecret = modPow(alicePublic, bobSecret, p);
+
+            document.getElementById("aliceSecretKey").textContent = aliceSharedSecret;
+            document.getElementById("bobSecretKey").textContent = bobSharedSecret;
+
+            // Verify both secrets match
+            document.getElementById("match").textContent =
+                aliceSharedSecret === bobSharedSecret ? "✅ Keys match!" : "❌ Keys do NOT match!";
+        }
+    </script>
+</head>
+<body>
+    <h2>Diffie-Hellman Key Exchange</h2>
+
+    <label>Enter Prime Number (p):</label>
+    <input type="number" id="p" value="23"><br><br>
+
+    <label>Enter Base (g):</label>
+    <input type="number" id="g" value="5"><br><br>
+
+    <label>Alice's Secret Key (a):</label>
+    <input type="number" id="aliceSecret" value="6"><br><br>
+
+    <button onclick="computeKeys()">Compute Shared Keys</button>
+
+    <h3>Results:</h3>
+    <p>Alice's Public Key: <span id="alicePublic"></span></p>
+    <p>Bob's Public Key (JavaScript): <span id="bobPublic"></span></p>
+    <p>Alice's Computed Shared Secret: <span id="aliceSecretKey"></span></p>
+    <p>Bob's Computed Shared Secret: <span id="bobSecretKey"></span></p>
+    <p><strong><span id="match"></span></strong></p>
+</body>
+</html>
